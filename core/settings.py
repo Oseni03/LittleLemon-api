@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     # i.e disabling a refresh token from 
     # regenerating new access token
     "rest_framework_simplejwt.token_blacklist",
+    # for filtering
+    "django_filters",
 ]
 
 MIDDLEWARE = [
@@ -138,7 +140,11 @@ REST_FRAMEWORK = {
         "anon": "2/minute",
         "user": "5/minute",
         "Ten": "10/minute",
-    }
+    },
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
 }
 
 # DJOSER = {
