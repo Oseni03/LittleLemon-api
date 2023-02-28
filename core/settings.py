@@ -28,15 +28,15 @@ INSTALLED_APPS = [
     "debug_toolbar",
     # Djoser - a package that takes care 
     # of api authentication 
-    "djoser",
-    # # JWT - alternative to the default 
-    # # token generator which also comes
-    # # with token refresh
-    # "rest_framework_simplejwt",
-    # # For blacklisting a refresh token 
-    # # i.e disabling a refresh token from 
-    # # regenerating new access token
-    # "rest_framework_simplejwt.token_blacklist", 
+    # "djoser",
+    # JWT - alternative to the default 
+    # token generator which also comes
+    # with token refresh
+    "rest_framework_simplejwt",
+    # For blacklisting a refresh token 
+    # i.e disabling a refresh token from 
+    # regenerating new access token
+    "rest_framework_simplejwt.token_blacklist", 
 ]
 
 MIDDLEWARE = [
@@ -141,10 +141,10 @@ REST_FRAMEWORK = {
     }
 }
 
-DJOSER = {
-    "USER_ID_FIELD": "username",
-}
-
-# SIMPLE_JWT = {
-#     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+# DJOSER = {
+#     "USER_ID_FIELD": "username",
 # }
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+}
