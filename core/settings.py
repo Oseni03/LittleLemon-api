@@ -28,7 +28,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
     # Djoser - a package that takes care 
     # of api authentication 
-    "djoser",
+    # "djoser",
     # # JWT - alternative to the default 
     # # token generator which also comes
     # # with token refresh
@@ -141,9 +141,9 @@ REST_FRAMEWORK = {
     }
 }
 
-DJOSER = {
-    "USER_ID_FIELD": "username",
-}
+# DJOSER = {
+#     "USER_ID_FIELD": "username",
+# }
 
 # SIMPLE_JWT = {
 #     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
