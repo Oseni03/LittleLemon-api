@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     # For blacklisting a refresh token 
     # i.e disabling a refresh token from 
     # regenerating new access token
-    "rest_framework_simplejwt.token_blacklist", 
+    "rest_framework_simplejwt.token_blacklist",
 ]
 
 MIDDLEWARE = [
