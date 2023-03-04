@@ -29,14 +29,14 @@ INSTALLED_APPS = [
     # Djoser - a package that takes care 
     # of api authentication 
     # "djoser",
-    # JWT - alternative to the default 
-    # token generator which also comes
-    # with token refresh
-    "rest_framework_simplejwt",
-    # For blacklisting a refresh token 
-    # i.e disabling a refresh token from 
-    # regenerating new access token
-    "rest_framework_simplejwt.token_blacklist",
+    # # JWT - alternative to the default 
+    # # token generator which also comes
+    # # with token refresh
+    # "rest_framework_simplejwt",
+    # # For blacklisting a refresh token 
+    # # i.e disabling a refresh token from 
+    # # regenerating new access token
+    # "rest_framework_simplejwt.token_blacklist",
     # for filtering
     "django_filters",
 ]
@@ -120,6 +120,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+AUTH_USER_MODEL = "LittleLemonAPI.CustomUser"
+
 INTERNAL_IPS = ("127.0.0.1",)
 DEBUG_TOOLBAR_CONFIG = {
     "INTERCEPT_REDIRECTS": False,
@@ -134,7 +136,10 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        # "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
     ],
     "DEFAULT_THROTTLE_RATES": {
         "anon": "2/minute",
@@ -151,6 +156,6 @@ REST_FRAMEWORK = {
 #     "USER_ID_FIELD": "username",
 # }
 
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
-}
+# SIMPLE_JWT = {
+#     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+# }
