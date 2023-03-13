@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     # "rest_framework_simplejwt.token_blacklist",
     # for filtering
     "django_filters",
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [
@@ -139,7 +140,7 @@ REST_FRAMEWORK = {
         # "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
+        "rest_framework.permissions.AllowAny",
     ],
     "DEFAULT_THROTTLE_RATES": {
         "anon": "2/minute",
@@ -147,6 +148,7 @@ REST_FRAMEWORK = {
         "Ten": "10/minute",
     },
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    "PAGE_SIZE": 20,
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),

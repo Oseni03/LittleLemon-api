@@ -5,11 +5,9 @@ from rest_framework.authtoken.models import Token
 
 from decimal import Decimal
 
-class GroupSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Group 
-        fields = ["id", "name"]
-        
+class GroupNameSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=150)
+
         
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,16 +24,11 @@ class TokenSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     token = TokenSerializer(read_only=True, source="auth_token")
-    groups = serializers.SerializerMethodField(method_name="user_groups")
+    groups = serializers.StringRelatedField(many=True)
     
     class Meta:
         model = CustomUser 
         fields = ["id", "username", "email", "first_name", "last_name", "token", "password", "groups"]
-    
-    def user_groups(self, user:CustomUser):
-        queryset = user.groups.values()
-        groups = GroupSerializer(queryset, many=True) 
-        return groups.data
     
     def create(self, validated_data):
         user = CustomUser.objects.create(**validated_data)
@@ -57,18 +50,13 @@ class MenuItemSerializer(serializers.ModelSerializer):
 
 
 class CartItemSerializer(serializers.ModelSerializer):
-    menuitem = MenuItemSerializer(many=True, read_only=True)
+    menuitem = MenuItemSerializer(many=False, read_only=True)
     menuitem_id = serializers.IntegerField(write_only=True)
     price = serializers.DecimalField(max_digits=6, decimal_places=2, read_only=True)
     
     class Meta:
         model = CartItem 
         fields = ["id", "menuitem", "unit_price", "quantity", "price", "menuitem_id"]
-    
-    # def create(self, validated_data):
-    #     item = CartItem.objects.create(**validated_data)
-    #     item.cart = self.request.user.cart
-    #     return item.save()
 
 
 class CartSerializer(serializers.ModelSerializer):
@@ -81,7 +69,7 @@ class CartSerializer(serializers.ModelSerializer):
     
 
 class OrderItemSerializer(serializers.ModelSerializer):
-    menuitem = MenuItemSerializer(many=True, read_only=True)
+    menuitem = MenuItemSerializer(read_only=True)
     menuitem_id = serializers.IntegerField(write_only=True)
     price = serializers.DecimalField(max_digits=6, decimal_places=2, read_only=True)
     
@@ -92,9 +80,10 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True, read_only=True)
-    status = serializers.BooleanField(read_only=True)
     total = serializers.DecimalField(max_digits=6, decimal_places=2, read_only=True)
+    user_id = serializers.IntegerField(write_only=True)
     
     class Meta:
         model = Order 
-        fields = ["id", "status", "total", "items"]
+        fields = ["id", "status", "total", "items", "user_id"]
+    

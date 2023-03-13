@@ -7,6 +7,8 @@ from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from decimal import Decimal
+
 # Create your models here.
 class CustomUser(AbstractUser):
     is_active = models.BooleanField(default=True)
@@ -69,8 +71,7 @@ class CartItem(models.Model):
         unique_together = ("menuitem", "cart")
     
     def save(self, *args, **kwargs):
-        if not self.price:
-            self.price = self.unit_price * self.quantity 
+        self.price = self.unit_price * self.quantity 
         self.cart.total += self.quantity
         self.cart.save()
         super().save(*args, **kwargs)
@@ -83,11 +84,12 @@ class Order(models.Model):
         
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     delivery_crew = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, related_name="delivery_crew", null=True)
-    status = models.BooleanField(
+    status = models.CharField(
+        max_length=50,
         choices=StatusChoice.choices, 
         default=StatusChoice.PENDING, 
         db_index=True)
-    total = models.DecimalField(max_digits=6, decimal_places=2)
+    total = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True, db_index=True)
     last_updated = models.DateTimeField(auto_now=True)
     
@@ -97,16 +99,16 @@ class OrderItem(models.Model):
     menuitem = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
     quantity = models.SmallIntegerField()
     unit_price = models.DecimalField(max_digits=6, decimal_places=2)
-    price = models.DecimalField(max_digits=6, decimal_places=2)
+    price = models.DecimalField(max_digits=6, decimal_places=2, null=True)
     
     class Meta:
         unique_together = ("menuitem", "order")
 
     def save(self, *args, **kwargs):
         if not self.price:
-            self.price = self.unit_price * self.quantity 
-        self.order.total += self.quantity
-        self.order.save()
+            self.price = Decimal(self.unit_price * self.quantity )
+        # self.order.total += self.quantity
+        # self.order.save()
         super().save(*args, **kwargs)
 
 

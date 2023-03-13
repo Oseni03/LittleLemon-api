@@ -21,6 +21,9 @@ class IsCustomer(permissions.BasePermission):
     def has_permission(self, request, view):
         customer = request.user.groups.filter(name="Customer").exists()
         return customer 
+        
+    def has_object_permission(self, request, view, obj):
+        return obj.user == request.user 
 
 
 class IsDeliveryCrew(permissions.BasePermission):
@@ -39,29 +42,37 @@ class ReadOnly(permissions.BasePermission):
         return request.method in permissions.SAFE_METHODS
 
 
-class CartListPermission(permissions.BasePermission):
-    message = "user's cart items only"
+class UserOrManager(permissions.BasePermission):
+    message = "Restricted permission"
     
     def has_object_permission(self, request, view, obj):
-        return obj.user == request.user
+        manager = request.user.groups.filter(name="Manager").exists() 
+        if not manager:
+            return obj == request.user
+        return manager
 
 
-class OrderPermission(permissions.BasePermission):
-    message = "customer's order items only"
-    
-    def has_permission(self, request, view):
-        customer = request.user.groups.filter(name="Customer").exists()
-        return customer 
+class UserObjectOnly(permissions.BasePermission):
+    message = "Restricted permission"
     
     def has_object_permission(self, request, view, obj):
-        return obj.user == request.user
+        return obj == request.user
 
 
 class IsManagerOrReadOnly(permissions.BasePermission):
     message = "Restricted to managers only"
     
-    def has_permission(self, request, view, obj):
+    def has_permission(self, request, view):
         manager = request.user.groups.filter(name="Manager").exists() 
         if not manager:
             return request.method in permissions.SAFE_METHODS
         return manager
+
+
+class IsManagerOrCustomer(permissions.BasePermission):
+    message = "Permission denied"
+    
+    def has_permission(self, request, view):
+        manager = request.user.groups.filter(name="Manager").exists() 
+        customer = request.user.groups.filter(name="Customer").exists() 
+        return manager or customer 
